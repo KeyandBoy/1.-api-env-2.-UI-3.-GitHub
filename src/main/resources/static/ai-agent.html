@@ -1,0 +1,1188 @@
+<!DOCTYPE html>
+<html lang="zh-CN">
+
+<head>
+
+    <meta charset="UTF-8">
+
+    <meta name="viewport"
+          content="width=device-width, initial-scale=1.0">
+
+    <title>AI Agent - 智能胰岛素泵仿真系统</title>
+
+
+    <style>
+
+        /*
+         * =====================================================
+         * 全局
+         * =====================================================
+         */
+
+        * {
+            box-sizing: border-box;
+        }
+
+
+        body {
+
+            margin: 0;
+
+            font-family:
+                    "Microsoft YaHei",
+                    Arial,
+                    sans-serif;
+
+            background:
+                    #f3f6f9;
+
+            color:
+                    #222;
+        }
+
+
+        /*
+         * =====================================================
+         * 顶部
+         * =====================================================
+         */
+
+        .header {
+
+            padding:
+                    28px;
+
+            background:
+                    white;
+
+            text-align:
+                    center;
+
+            box-shadow:
+                    0 2px 8px
+                    rgba(0,0,0,0.08);
+        }
+
+
+        .header h1 {
+
+            margin:
+                    0 0 8px 0;
+        }
+
+
+        .header p {
+
+            margin:
+                    0;
+
+            color:
+                    #666;
+        }
+
+
+        /*
+         * =====================================================
+         * 主体
+         * =====================================================
+         */
+
+        .container {
+
+            width:
+                    1100px;
+
+            max-width:
+                    calc(100% - 40px);
+
+            margin:
+                    30px auto;
+        }
+
+
+        /*
+         * =====================================================
+         * 导航
+         * =====================================================
+         */
+
+        .navigation {
+
+            background:
+                    white;
+
+            padding:
+                    18px;
+
+            border-radius:
+                    10px;
+
+            text-align:
+                    center;
+
+            margin-bottom:
+                    25px;
+        }
+
+
+        .navigation a {
+
+            display:
+                    inline-block;
+
+            padding:
+                    11px 20px;
+
+            margin:
+                    5px;
+
+            color:
+                    white;
+
+            background:
+                    #1976d2;
+
+            border-radius:
+                    6px;
+
+            text-decoration:
+                    none;
+        }
+
+
+        /*
+         * =====================================================
+         * 当前模拟数据
+         * =====================================================
+         */
+
+        .data-grid {
+
+            display:
+                    grid;
+
+            grid-template-columns:
+                    repeat(5, 1fr);
+
+            gap:
+                    15px;
+        }
+
+
+        .data-card {
+
+            background:
+                    white;
+
+            padding:
+                    20px;
+
+            border-radius:
+                    10px;
+
+            text-align:
+                    center;
+        }
+
+
+        .data-label {
+
+            color:
+                    #777;
+
+            margin-bottom:
+                    10px;
+        }
+
+
+        .data-value {
+
+            font-size:
+                    21px;
+
+            font-weight:
+                    bold;
+        }
+
+
+        /*
+         * =====================================================
+         * 通用面板
+         * =====================================================
+         */
+
+        .panel {
+
+            margin-top:
+                    25px;
+
+            padding:
+                    25px;
+
+            background:
+                    white;
+
+            border-radius:
+                    12px;
+        }
+
+
+        .panel h2 {
+
+            text-align:
+                    center;
+
+            margin-top:
+                    0;
+        }
+
+
+        /*
+         * =====================================================
+         * AI 状态
+         * =====================================================
+         */
+
+        .agent-status {
+
+            text-align:
+                    center;
+
+            font-size:
+                    32px;
+
+            font-weight:
+                    bold;
+
+            margin:
+                    15px 0;
+        }
+
+
+        .stable {
+            color: #169b45;
+        }
+
+
+        .attention {
+            color: #e67e22;
+        }
+
+
+        .alert {
+            color: #d32f2f;
+        }
+
+
+        /*
+         * =====================================================
+         * AI 输出文字
+         * =====================================================
+         */
+
+        .result-box {
+
+            padding:
+                    16px;
+
+            margin-top:
+                    15px;
+
+            background:
+                    #f7f9fb;
+
+            border-radius:
+                    8px;
+
+            line-height:
+                    1.8;
+        }
+
+
+        .result-title {
+
+            font-weight:
+                    bold;
+
+            margin-bottom:
+                    6px;
+        }
+
+
+        /*
+         * =====================================================
+         * 按钮
+         * =====================================================
+         */
+
+        .button-group {
+
+            text-align:
+                    center;
+
+            margin:
+                    25px 0;
+        }
+
+
+        button {
+
+            padding:
+                    13px 26px;
+
+            border:
+                    none;
+
+            border-radius:
+                    7px;
+
+            font-size:
+                    16px;
+
+            color:
+                    white;
+
+            background:
+                    #1976d2;
+
+            cursor:
+                    pointer;
+        }
+
+
+        button:disabled {
+
+            background:
+                    #999;
+
+            cursor:
+                    not-allowed;
+        }
+
+
+        /*
+         * =====================================================
+         * 列表
+         * =====================================================
+         */
+
+        ul {
+
+            line-height:
+                    1.8;
+
+            margin:
+                    8px 0;
+        }
+
+
+        /*
+         * =====================================================
+         * 教学说明
+         * =====================================================
+         */
+
+        .notice {
+
+            margin-top:
+                    25px;
+
+            background:
+                    #fff3cd;
+
+            padding:
+                    16px;
+
+            border-radius:
+                    8px;
+
+            line-height:
+                    1.7;
+        }
+
+
+        /*
+         * =====================================================
+         * 响应式
+         * =====================================================
+         */
+
+        @media (max-width: 850px) {
+
+            .data-grid {
+
+                grid-template-columns:
+                        repeat(2, 1fr);
+            }
+        }
+
+
+        @media (max-width: 500px) {
+
+            .data-grid {
+
+                grid-template-columns:
+                        1fr;
+            }
+        }
+
+    </style>
+
+</head>
+
+
+<body>
+
+
+<div class="header">
+
+    <h1>
+        AI Agent 智能分析中心
+    </h1>
+
+    <p>
+        Physiological Data Analysis Agent
+    </p>
+
+</div>
+
+
+<div class="container">
+
+
+    <!-- 导航 -->
+
+    <div class="navigation">
+
+        <a href="/">
+            返回系统控制台
+        </a>
+
+        <a href="/charts.html">
+            数据可视化
+        </a>
+
+    </div>
+
+
+
+    <!-- 当前输入 -->
+
+    <div class="panel">
+
+        <h2>
+            AI Agent 当前输入
+        </h2>
+
+
+        <div class="data-grid">
+
+
+            <div class="data-card">
+
+                <div class="data-label">
+                    模拟血糖
+                </div>
+
+                <div
+                        id="glucose"
+                        class="data-value">
+
+                    --
+
+                </div>
+
+            </div>
+
+
+            <div class="data-card">
+
+                <div class="data-label">
+                    模拟血压
+                </div>
+
+                <div
+                        id="bloodPressure"
+                        class="data-value">
+
+                    --
+
+                </div>
+
+            </div>
+
+
+            <div class="data-card">
+
+                <div class="data-label">
+                    模拟心率
+                </div>
+
+                <div
+                        id="heartRate"
+                        class="data-value">
+
+                    --
+
+                </div>
+
+            </div>
+
+
+            <div class="data-card">
+
+                <div class="data-label">
+                    Pump Status
+                </div>
+
+                <div
+                        id="pumpStatus"
+                        class="data-value">
+
+                    --
+
+                </div>
+
+            </div>
+
+
+            <div class="data-card">
+
+                <div class="data-label">
+                    Reservoir
+                </div>
+
+                <div
+                        id="reservoir"
+                        class="data-value">
+
+                    --
+
+                </div>
+
+            </div>
+
+
+        </div>
+
+
+        <div class="button-group">
+
+            <button
+                    id="analyzeButton"
+                    onclick="runAiAgent()">
+
+                获取模拟数据并运行 AI Agent
+
+            </button>
+
+        </div>
+
+    </div>
+
+
+
+    <!-- AI Agent 结果 -->
+
+    <div class="panel">
+
+        <h2>
+            AI Agent 分析结果
+        </h2>
+
+
+        <div
+                id="agentStatus"
+                class="agent-status">
+
+            WAITING
+
+        </div>
+
+
+        <div class="result-box">
+
+            <div class="result-title">
+                生理状态总结
+            </div>
+
+            <div id="physiologicalSummary">
+                等待 AI Agent 分析
+            </div>
+
+        </div>
+
+
+        <div class="result-box">
+
+            <div class="result-title">
+                历史趋势分析
+            </div>
+
+            <div id="trendSummary">
+                等待 AI Agent 分析
+            </div>
+
+        </div>
+
+
+        <div class="result-box">
+
+            <div class="result-title">
+                Pump 状态分析
+            </div>
+
+            <div id="pumpSummary">
+                等待 AI Agent 分析
+            </div>
+
+        </div>
+
+
+        <div class="result-box">
+
+            <div class="result-title">
+                Alarm 分析
+            </div>
+
+                <div id="alarmSummary">
+                等待 AI Agent 分析
+                </div>
+
+        <div class="result-box">
+            <div class="result-title">DeepSeek 辅助解释</div>
+            <div id="aiExplanation">等待 AI Agent 分析</div>
+        </div>
+
+        </div>
+
+
+        <div class="result-box">
+
+            <div class="result-title">
+                异常发现
+            </div>
+
+            <ul id="abnormalFindings">
+
+                <li>
+                    尚未进行分析
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div class="result-box">
+
+            <div class="result-title">
+                AI Agent 教学仿真建议
+            </div>
+
+            <ul id="suggestions">
+
+                <li>
+                    尚未生成建议
+                </li>
+
+            </ul>
+
+        </div>
+
+
+        <div
+                id="analysisInfo"
+                class="result-box">
+
+            AI Agent 尚未运行
+
+        </div>
+
+    </div>
+
+
+
+    <div class="notice">
+
+        <strong>
+            教学仿真说明：
+        </strong>
+
+        本 AI Agent 仅分析课程软件中的模拟生理数据和模拟设备状态，
+        输出内容用于验证 AI Agent、报警、历史趋势分析和软件控制流程。
+        本系统不用于真实医疗诊断，不提供实际治疗方案，也不用于计算或指导真实胰岛素给药。
+
+    </div>
+
+
+</div>
+
+
+
+<script>
+
+    /**
+     * AI Agent 完整流程：
+     *
+     * 1. 获取模拟 SensorData
+     * 2. 获取 PumpStatus
+     * 3. 调用 /api/ai/analyze
+     * 4. AI Agent 自动读取历史数据库
+     * 5. 返回综合结果
+     */
+    function runAiAgent() {
+
+
+        const button =
+            document.getElementById(
+                "analyzeButton"
+            );
+
+
+        button.disabled =
+            true;
+
+
+        button.innerText =
+            "AI Agent 正在分析...";
+
+
+        /*
+         * 同时读取：
+         *
+         * Sensor
+         * Pump
+         */
+        Promise.all([
+
+            fetch(
+                "/api/sensor/current"
+            )
+                .then(
+                    response =>
+                        response.json()
+                ),
+
+
+            fetch(
+                "/api/pump/status"
+            )
+                .then(
+                    response =>
+                        response.json()
+                )
+
+        ])
+
+
+            .then(results => {
+
+
+                /*
+                 * 第一个返回 SensorData。
+                 */
+                const sensor =
+                    results[0];
+
+
+                /*
+                 * 第二个返回 PumpStatus。
+                 */
+                const pump =
+                    results[1];
+
+
+                /*
+                 * 显示 AI 输入。
+                 */
+                document.getElementById(
+                    "glucose"
+                ).innerText =
+
+                    sensor.glucose
+
+                    +
+
+                    " mmol/L";
+
+
+                document.getElementById(
+                    "bloodPressure"
+                ).innerText =
+
+                    sensor.systolicPressure
+
+                    +
+
+                    "/"
+
+                    +
+
+                    sensor.diastolicPressure
+
+                    +
+
+                    " mmHg";
+
+
+                document.getElementById(
+                    "heartRate"
+                ).innerText =
+
+                    sensor.heartRate
+
+                    +
+
+                    " BPM";
+
+
+                document.getElementById(
+                    "pumpStatus"
+                ).innerText =
+                    pump.status;
+
+
+                document.getElementById(
+                    "reservoir"
+                ).innerText =
+
+                    Number(
+                        pump.reservoir
+                    ).toFixed(2)
+
+                    +
+
+                    " SU";
+
+
+                /*
+                 * 构造 AI Agent API。
+                 */
+                const url =
+
+                    "/api/ai/analyze"
+
+                    +
+
+                    "?glucose="
+
+                    + encodeURIComponent(
+                        sensor.glucose
+                    )
+
+                    +
+
+                    "&systolic="
+
+                    + encodeURIComponent(
+                        sensor.systolicPressure
+                    )
+
+                    +
+
+                    "&diastolic="
+
+                    + encodeURIComponent(
+                        sensor.diastolicPressure
+                    )
+
+                    +
+
+                    "&heartRate="
+
+                    + encodeURIComponent(
+                        sensor.heartRate
+                    )
+
+                    +
+
+                    "&reservoir="
+
+                    + encodeURIComponent(
+                        pump.reservoir
+                    )
+
+                    +
+
+                    "&pumpStatus="
+
+                    + encodeURIComponent(
+                        pump.status
+                    );
+
+
+                /*
+                 * 调用 AI Agent。
+                 */
+                return fetch(
+                    url
+                );
+
+            })
+
+
+            .then(response => {
+
+
+                if (!response.ok) {
+
+                    throw new Error(
+                        "AI Agent 接口错误："
+                        +
+                        response.status
+                    );
+                }
+
+
+                return response.json();
+
+            })
+
+
+            .then(result => {
+
+
+                /*
+                 * 显示 Agent 状态。
+                 */
+                updateAgentStatus(
+                    result.agentStatus
+                );
+
+
+                /*
+                 * 生理摘要。
+                 */
+                document.getElementById(
+                    "physiologicalSummary"
+                ).innerText =
+                    result.physiologicalSummary;
+
+
+                /*
+                 * 趋势摘要。
+                 */
+                document.getElementById(
+                    "trendSummary"
+                ).innerText =
+                    result.trendSummary;
+
+
+                /*
+                 * Pump 摘要。
+                 */
+                document.getElementById(
+                    "pumpSummary"
+                ).innerText =
+                    result.pumpSummary;
+
+
+                /*
+                 * Alarm 摘要。
+                 */
+                document.getElementById(
+                    "alarmSummary"
+                ).innerText =
+                    result.alarmSummary;
+
+                document.getElementById(
+                    "aiExplanation"
+                ).innerText =
+                    result.aiExplanation ||
+                    "当前未生成外部 AI 辅助解释。";
+
+
+                /*
+                 * 显示异常列表。
+                 */
+                fillList(
+
+                    "abnormalFindings",
+
+                    result.abnormalFindings
+
+                );
+
+
+                /*
+                 * 显示建议列表。
+                 */
+                fillList(
+
+                    "suggestions",
+
+                    result.suggestions
+
+                );
+
+
+                /*
+                 * 分析信息。
+                 */
+                document.getElementById(
+                    "analysisInfo"
+                ).innerText =
+
+                    "AI Agent 分析完成。"
+
+                    +
+
+                    " 本次使用最近 "
+
+                    +
+
+                    result.historyRecordCount
+
+                    +
+
+                    " 条历史记录进行趋势分析。"
+
+                    +
+
+                    " 分析时间："
+
+                    +
+
+                    result.analysisTime;
+
+            })
+
+
+            .catch(error => {
+
+
+                console.error(
+                    error
+                );
+
+
+                document.getElementById(
+                    "analysisInfo"
+                ).innerText =
+
+                    "AI Agent 运行失败，请检查 Spring Boot 后端。";
+
+            })
+
+
+            .finally(() => {
+
+
+                button.disabled =
+                    false;
+
+
+                button.innerText =
+                    "获取模拟数据并运行 AI Agent";
+
+            });
+
+    }
+
+
+
+    /**
+     * 更新 Agent 状态及颜色。
+     */
+    function updateAgentStatus(status) {
+
+
+        const element =
+            document.getElementById(
+                "agentStatus"
+            );
+
+
+        element.classList.remove(
+            "stable",
+            "attention",
+            "alert"
+        );
+
+
+        element.innerText =
+            status;
+
+
+        if (
+            status === "STABLE"
+        ) {
+
+            element.classList.add(
+                "stable"
+            );
+
+
+        } else if (
+            status === "ATTENTION"
+        ) {
+
+            element.classList.add(
+                "attention"
+            );
+
+
+        } else {
+
+            element.classList.add(
+                "alert"
+            );
+
+        }
+
+    }
+
+
+
+    /**
+     * 将 String 数组显示成 HTML 列表。
+     */
+    function fillList(
+        elementId,
+        values
+    ) {
+
+
+        const element =
+            document.getElementById(
+                elementId
+            );
+
+
+        element.innerHTML =
+            "";
+
+
+        values.forEach(
+
+            function(value) {
+
+
+                const li =
+                    document.createElement(
+                        "li"
+                    );
+
+
+                li.innerText =
+                    value;
+
+
+                element.appendChild(
+                    li
+                );
+
+            }
+
+        );
+
+    }
+
+
+</script>
+
+
+</body>
+
+</html>
