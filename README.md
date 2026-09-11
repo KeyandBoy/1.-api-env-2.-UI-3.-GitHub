@@ -44,6 +44,8 @@ Sensor -> SensorAnalyzer -> Alarm / InsulinCalculator
 - Pump 状态、Reservoir、故障仿真和统一错误处理
 - 历史记录表格、四张 ECharts 图、Rule-Based AI Agent
 
+DeepSeek 模型约束：普通文字解释使用 `v4flash`；如后续为四张 ECharts 图增加图像分析，使用 `v4vision`。当前图表仍由本地 ECharts 生成，不会自动上传图片，避免无必要的 Token 和网络消耗。
+
 ## API 概览
 
 | 方法 | URL | 作用 |
