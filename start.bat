@@ -20,6 +20,16 @@ if errorlevel 1 (
     exit /b 1
 )
 
+rem Avoid starting a second application when port 9100 is already active.
+rem netstat is available on standard Windows installations.
+netstat -ano | findstr /R /C:":9100 .*LISTENING" >nul
+if not errorlevel 1 (
+    echo Port 9100 is already in use. The application may already be running.
+    start "" "http://localhost:9100"
+    pause
+    exit /b 0
+)
+
 echo.
 echo Starting Insulin Pump Simulation on port 9100...
 echo Project: %CD%
@@ -29,7 +39,8 @@ echo Press Ctrl+C to stop the application.
 echo.
 
 rem .env is read by the application when DeepSeek integration is enabled.
-mvn spring-boot:run
+rem Use the Windows Maven command explicitly so double-click launch works reliably.
+call mvn.cmd spring-boot:run
 
 echo.
 echo Spring Boot has stopped. Check the log above for details.
