@@ -63,12 +63,13 @@ public class HeartRateSensor {
 
 
         /*
-         * 正常模拟数据。
+         * 日常演示使用 65 - 89 的课程仿真范围，
+         * 避免随机值频繁触发低心率或高心率 Alarm。
          */
-        return 50
+        return 65
                 +
                 random.nextInt(
-                        70
+                        25
                 );
     }
 }

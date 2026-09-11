@@ -79,13 +79,18 @@ public class GlucoseSensor {
          *
          * 仅用于软件测试，
          * 不代表医学数据生成标准。
+         *
+         * 将范围收窄到 5.00 - 9.00，
+         * 让日常演示以正常状态为主，
+         * 避免首页每次采集都频繁触发 Alarm。
+         * 异常场景仍可通过 Analyzer / Alarm API 手工构造。
          */
         double glucose =
-                3.0
-                +
-                random.nextDouble()
-                *
-                12.0;
+                 5.0
+                 +
+                 random.nextDouble()
+                 *
+                 4.0;
 
 
         /*

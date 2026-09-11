@@ -70,10 +70,14 @@ public class BloodPressureSensor {
 
         checkSensorStatus();
 
-        return 90
+        /*
+         * 日常演示使用 105 - 139 的课程仿真范围，
+         * 避免随机值频繁达到 Alarm 的高压阈值 140。
+         */
+        return 105
                 +
                 random.nextInt(
-                        70
+                        35
                 );
     }
 
@@ -85,10 +89,14 @@ public class BloodPressureSensor {
 
         checkSensorStatus();
 
-        return 60
+        /*
+         * 日常演示使用 65 - 84 的课程仿真范围，
+         * 避免随机值频繁达到 Alarm 的高压阈值 90。
+         */
+        return 65
                 +
                 random.nextInt(
-                        40
+                        20
                 );
     }
 }
