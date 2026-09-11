@@ -38,6 +38,10 @@ echo Keep this window open to view Spring Boot logs.
 echo Press Ctrl+C to stop the application.
 echo.
 
+rem Open the homepage automatically after Spring Boot starts listening.
+rem The watcher runs separately so Maven logs remain visible in this window.
+start "" powershell.exe -NoProfile -WindowStyle Hidden -ExecutionPolicy Bypass -Command "$deadline=(Get-Date).AddSeconds(90); do { Start-Sleep -Seconds 1; $listening=netstat -ano | Select-String ':9100 .*LISTENING' } while(-not $listening -and (Get-Date) -lt $deadline); if($listening){ Start-Process 'http://localhost:9100' }"
+
 rem .env is read by the application when DeepSeek integration is enabled.
 rem Use the Windows Maven command explicitly so double-click launch works reliably.
 call mvn.cmd spring-boot:run
