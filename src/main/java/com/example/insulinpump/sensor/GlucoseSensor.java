@@ -80,17 +80,28 @@ public class GlucoseSensor {
          * 仅用于软件测试，
          * 不代表医学数据生成标准。
          *
-         * 将范围收窄到 5.00 - 9.00，
-         * 让日常演示以正常状态为主，
-         * 避免首页每次采集都频繁触发 Alarm。
-         * 异常场景仍可通过 Analyzer / Alarm API 手工构造。
+         * 采用便于课程实验的概率分布：
+         *
+         * 55%：5.00 - 8.00，正常演示数据
+         * 30%：3.50 - 3.90，触发 WARNING
+         * 15%：11.10 - 13.00，触发 CRITICAL
+         *
+         * 本传感器作为一轮演示的主要报警场景来源，
+         * 这样系统级结果更接近课程实验指定的
+         * 55% NORMAL、30% WARNING、15% CRITICAL。
+         * 血压和心率保持正常范围，避免独立异常叠加。
+         * 异常场景仍可通过 Analyzer / Alarm API 精确构造。
          */
-        double glucose =
-                 5.0
-                 +
-                 random.nextDouble()
-                 *
-                 4.0;
+        int profile = random.nextInt(100);
+        double glucose;
+
+        if (profile < 55) {
+            glucose = 5.0 + random.nextDouble() * 3.0;
+        } else if (profile < 85) {
+            glucose = 3.5 + random.nextDouble() * 0.4;
+        } else {
+            glucose = 11.1 + random.nextDouble() * 1.9;
+        }
 
 
         /*

@@ -71,14 +71,11 @@ public class BloodPressureSensor {
         checkSensorStatus();
 
         /*
-         * 日常演示使用 105 - 139 的课程仿真范围，
-         * 避免随机值频繁达到 Alarm 的高压阈值 140。
+         * 血糖传感器负责本轮主要报警概率，
+         * 血压日常数据保持正常，避免独立随机异常
+         * 把总体比例再次推高。异常血压仍可通过 API 测试。
          */
-        return 105
-                +
-                random.nextInt(
-                        35
-                );
+        return 110 + random.nextInt(20);
     }
 
 
@@ -90,13 +87,9 @@ public class BloodPressureSensor {
         checkSensorStatus();
 
         /*
-         * 日常演示使用 65 - 84 的课程仿真范围，
-         * 避免随机值频繁达到 Alarm 的高压阈值 90。
+         * 与收缩压配套生成正常舒张压，
+         * 保证日常演示的报警来源清晰可解释。
          */
-        return 65
-                +
-                random.nextInt(
-                        20
-                );
+        return 70 + random.nextInt(15);
     }
 }

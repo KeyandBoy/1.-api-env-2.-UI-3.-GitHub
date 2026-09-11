@@ -63,13 +63,10 @@ public class HeartRateSensor {
 
 
         /*
-         * 日常演示使用 65 - 89 的课程仿真范围，
-         * 避免随机值频繁触发低心率或高心率 Alarm。
+         * 日常演示保持正常心率，
+         * 让系统级 55/30/15 报警分布由血糖场景控制。
+         * 低/高心率仍可通过 Analyzer / Alarm API 单独测试。
          */
-        return 65
-                +
-                random.nextInt(
-                        25
-                );
+        return 65 + random.nextInt(25);
     }
 }
